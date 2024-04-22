@@ -582,6 +582,19 @@ void Gopher::handleScrolling()
 	float magnitudeX = abs(tx);
 	float magnitudeY = abs(ty);
 
+	// if both, only scroll in the direction with the most magnitude
+	if (magnitudeX > SCROLL_DEAD_ZONE && magnitudeY > SCROLL_DEAD_ZONE)
+	{
+		if (magnitudeX > magnitudeY)
+		{
+			magnitudeY = 0;
+		}
+		else
+		{
+			magnitudeX = 0;
+		}
+	}
+
 	if (magnitudeX > SCROLL_DEAD_ZONE)
 	{
 		double scrollX = tx * getMult(magnitudeX, SCROLL_DEAD_ZONE) * current_SCROLL_SPEED;
