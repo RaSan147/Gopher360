@@ -21,12 +21,19 @@ private:
 	int DEAD_ZONE = 3000;                 // Thumbstick dead zone to use for mouse movement. Absolute maximum shall be 65534.
 	int SCROLL_DEAD_ZONE = 3000;          // Thumbstick dead zone to use for scroll wheel movement. Absolute maximum shall be 65534.
 	int TRIGGER_DEAD_ZONE = 0;            // Dead zone for the left and right triggers to detect a trigger press. 0 means that any press to trigger will be read as a button press.
-	float SCROLL_SPEED = 0.1f;             // Speed at which you scroll.
+	//float SCROLL_SPEED = 0.1f;             // Speed at which you scroll.
 	const int FPS = 150;                  // Update rate of the main Gopher loop. Interpreted as cycles-per-second.
 	const int SLEEP_AMOUNT = 1000 / FPS;  // Number of milliseconds to sleep per iteration.
 	int SWAP_THUMBSTICKS = 0;             // Swaps the function of the thumbsticks when not equal to 0.
 
 	XINPUT_STATE _currentState;
+	// Scroll speed settings
+	const float SCROLL_SPEED_ULTRALOW = 0.03f;
+	const float SCROLL_SPEED_LOW = 0.07f;
+	const float SCROLL_SPEED_MED = 0.1f;
+	const float SCROLL_SPEED_HIGH = 0.2f;
+	float scroll_speed = SCROLL_SPEED_MED;
+	unsigned int scroll_speed_idx = 0;
 
 	// Cursor speed settings
 	const float SPEED_ULTRALOW = 0.005f;
@@ -35,6 +42,7 @@ private:
 	const float SPEED_HIGH = 0.04f;
 	float speed = SPEED_MED;
 	float acceleration_factor = 0.0f;
+	unsigned int speed_idx = 0;
 
 	float _xRest = 0.0f;
 	float _yRest = 0.0f;
@@ -45,9 +53,12 @@ private:
 	bool _lTriggerPrevious = false;   // Previous state of the left trigger.
 	bool _rTriggerPrevious = false;   // Previous state of the right trigger.
 
+	std::vector<float> scroll_speeds;	    // Contains actual speeds to choose
+	std::vector<std::string> scroll_speed_names;  // Contains display names of speeds to display
+	unsigned int scroll_idx = 0;
+
 	std::vector<float> speeds;	            // Contains actual speeds to choose
 	std::vector<std::string> speed_names;   // Contains display names of speeds to display
-	unsigned int speed_idx = 0;
 
 	// Mouse Clicks
 	DWORD CONFIG_MOUSE_LEFT = NULL;
@@ -59,6 +70,7 @@ private:
 	DWORD CONFIG_DISABLE = NULL;
 	DWORD CONFIG_DISABLE_VIBRATION = NULL;
 	DWORD CONFIG_SPEED_CHANGE = NULL;
+	DWORD CONFIG_SCROLL_SPEED_CHANGE = NULL;
 	DWORD CONFIG_OSK = NULL;
 
 	// Gamepad bindings
@@ -106,7 +118,7 @@ public:
 
 	void setWindowVisibility(const bool& hidden) const;
 
-	float getDelta(short tx);
+	short getDelta(short tx);
 
 	float getMult(float length, float deadzone, float accel);
 

@@ -102,49 +102,11 @@ void ConfigFile::ExtractKeys()
 		outfile << "#	If you want a fresh one, just DELETE THIS FILE and re-run Gopher360." << std::endl;
 		outfile << "#	Set which controller buttons will activate the configuration events." << std::endl;
 		outfile << "#	SET 0 FOR NO FUNCTION." << std::endl;
-		outfile << "#	AVAILABLE VALUES AT https://msdn.microsoft.com/en-us/library/windows/desktop/microsoft.directx_sdk.reference.xinput_gamepad(v=vs.85).aspx" << std::endl;
-		outfile << "#	TIP: Sum the hex value for double button shortcuts eg. 0x0010(START) 0x0020(BACK) so 0x0030(START+BACK) will trigger the event only when both are pressed." << std::endl;
-		outfile << "" << std::endl;
-		outfile << "" << std::endl;
-		outfile << "CONFIG_MOUSE_LEFT = 0x2000  # Left mouse button                 B" << std::endl;
-		outfile << "CONFIG_MOUSE_RIGHT = 0x4000	# Right mouse button                X" << std::endl;
-		outfile << "CONFIG_MOUSE_MIDDLE = 0     # Middle mouse button" << std::endl;
-		outfile << "CONFIG_HIDE = 0             # Hides the terminal" << std::endl;
-		outfile << "CONFIG_DISABLE = 0x0030     # Disables the Gopher               Select+Start " << std::endl;
-		outfile << "CONFIG_DISABLE_VIBRATION = 0x0011 # Disables Gopher Vibrations  Start+Up" << std::endl;
-		outfile << "CONFIG_SPEED_CHANGE =  0x0300     # Change speed                LBump+RBump" << std::endl;
-		outfile << "#CONFIG_OSK = 0x0020              # Toggle on-screen keyboard" << std::endl;
-		outfile << "" << std::endl;
-		outfile << "" << std::endl;
-		outfile << "#	KEYBOARD SHORTCUTS ON CONTROLLER BUTTONS" << std::endl;
-		outfile << "#	SET 0 FOR NO FUNCTION" << std::endl;
-		outfile << "#	AVAILABLE VALUES AT> https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731" << std::endl;
-		outfile << "" << std::endl;
-		outfile << "" << std::endl;
-		outfile << "GAMEPAD_DPAD_UP = 0x26                          # UP" << std::endl;
-		outfile << "GAMEPAD_DPAD_DOWN = 0x28                        # DOWN" << std::endl;
-		outfile << "GAMEPAD_DPAD_LEFT = 0x25                        # LEFT" << std::endl;
-		outfile << "GAMEPAD_DPAD_RIGHT = 0x27                       # RIGHT" << std::endl;
-		outfile << "GAMEPAD_START = 0x5B                            # WINDOW" << std::endl;
-		outfile << "GAMEPAD_BACK = 0x09                             # TAB" << std::endl;
-		outfile << "GAMEPAD_LEFT_THUMB = 0" << std::endl;
-		outfile << "GAMEPAD_RIGHT_THUMB = 0" << std::endl;
-		outfile << "GAMEPAD_LEFT_SHOULDER = 0xA6                    # BACK" << std::endl;
-		outfile << "GAMEPAD_RIGHT_SHOULDER = 0xA7                  # FORWARD" << std::endl;
-		outfile << "GAMEPAD_A = 0x0D                                # ENTER" << std::endl;
-		outfile << "GAMEPAD_B = 0" << std::endl;
-		outfile << "GAMEPAD_X = 0" << std::endl;
-		outfile << "GAMEPAD_Y = 0x08                             # BACKSPACE" << std::endl;
-		outfile << "" << std::endl;
-		outfile << "GAMEPAD_TRIGGER_LEFT = 0x10                  # shift key" << std::endl;
-		outfile << "GAMEPAD_TRIGGER_RIGHT = 0x11                 # control key" << std::endl;
-		outfile << "CTRL_GAMEPAD_LEFT_SHOULDER = 0xBD            # ctrl + -" << std::endl;
-		outfile << "CTRL_GAMEPAD_RIGHT_SHOULDER = 0xBB           # ctrl + +" << std::endl;
 		outfile << "" << std::endl;
 		outfile << "# ADVANCED CONFIGURATION SETTINGS" << std::endl;
 		outfile << "#  ALLOWED CURSOR SPEEDS, FIRST WILL BE CHOSEN BY DEFAULT.  VALUES > 1.0 WILL BE IGNORED.  NO SPACES." << std::endl;
-		outfile << "# CURSOR_SPEED = ULTRALOW=0.005,LOW=0.015,MED=0.025,HIGH=0.04" << std::endl;
-		outfile << "CURSOR_SPEED = 0.03" << std::endl;
+		outfile << "# SCROLL_SPEEDS = ULTRASLOW=0.03,LOW=0.07,MED=0.1,HIGH=0.2" << std::endl;
+		outfile << "# CURSOR_SPEEDS = ULTRALOW=0.005,LOW=0.015,MED=0.025,HIGH=0.04" << std::endl;
 		outfile << "#  SET ACCELERATION FACTOR FOR NON-LINEAR CURSOR SPEED" << std::endl;
 		outfile << "# ACCELERATION_FACTOR = 3" << std::endl;
 		outfile << "#  Swaps the function of the thumbsticks. Set to 0 for default behavior or set to 1 to have the mouse movement on the right stick and scrolling on the left stick." << std::endl;
@@ -153,6 +115,45 @@ void ConfigFile::ExtractKeys()
 		outfile << "SCROLL_DEAD_ZONE = 6000 # Thumbstick dead zone to use for scroll wheel movement. Absolute maximum thumbstick value is 32768." << std::endl;
 		outfile << "TRIGGER_DEAD_ZONE = 0 # Dead zone for the left and right triggers to detect a trigger press. Range from 0 (accept all input) to 255 (ignore all input)." << std::endl;
 		outfile << "SCROLL_SPEED = 0.1 # Speed at which you scroll (scalar)" << std::endl;
+		outfile << "#	AVAILABLE VALUES AT https://msdn.microsoft.com/en-us/library/windows/desktop/microsoft.directx_sdk.reference.xinput_gamepad(v=vs.85).aspx" << std::endl;
+		outfile << "#	TIP: Sum the hex value for double button shortcuts eg. 0x0010(START) 0x0020(BACK) so 0x0030(START+BACK) will trigger the event only when both are pressed." << std::endl;
+		outfile << "" << std::endl;
+		outfile << "" << std::endl;
+		outfile << "#CONFIG_OSK = 0x0020                # Toggle on-screen keyboard" << std::endl;
+		outfile << "" << std::endl;
+		outfile << "" << std::endl;
+		outfile << "#	KEYBOARD SHORTCUTS ON CONTROLLER BUTTONS" << std::endl;
+		outfile << "#	SET 0 FOR NO FUNCTION" << std::endl;
+		outfile << "#	AVAILABLE VALUES AT> https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731" << std::endl;
+		outfile << "" << std::endl;
+		outfile << "" << std::endl;
+		outfile << "CONFIG_MOUSE_LEFT = 0x2000          # Left mouse button          #B" << std::endl;
+		outfile << "CONFIG_MOUSE_RIGHT = 0x4000         # Right mouse button         #X" << std::endl;
+		outfile << "CONFIG_MOUSE_MIDDLE = 0             # Middle mouse button" << std::endl;
+		outfile << "CONFIG_HIDE = 0                     # Hides the terminal" << std::endl;
+		outfile << "CONFIG_DISABLE = 0x0030             # Disables the Gopher        #Select+Start              " << std::endl;
+		outfile << "CONFIG_DISABLE_VIBRATION = 0x0021   # Disables Gopher Vibrations #Select+Up" << std::endl;
+		outfile << "CONFIG_SCROLL_SPEED_CHANGE = 0x0028 # Change scroll speed        #Select+Down" << std::endl;
+		outfile << "CONFIG_SPEED_CHANGE =  0x0024       # Change speed               #LBump+RBump" << std::endl;
+		outfile << "GAMEPAD_DPAD_UP = 0x26              # UP" << std::endl;
+		outfile << "GAMEPAD_DPAD_DOWN = 0x28            # DOWN" << std::endl;
+		outfile << "GAMEPAD_DPAD_LEFT = 0x25            # LEFT" << std::endl;
+		outfile << "GAMEPAD_DPAD_RIGHT = 0x27           # RIGHT" << std::endl;
+		outfile << "GAMEPAD_START = 0x5B                # WINDOW" << std::endl;
+		outfile << "GAMEPAD_BACK = 0x09                 # TAB" << std::endl;
+		outfile << "GAMEPAD_LEFT_THUMB = 0" << std::endl;
+		outfile << "GAMEPAD_RIGHT_THUMB = 0" << std::endl;
+		outfile << "GAMEPAD_LEFT_SHOULDER = 0xA6        # BACK" << std::endl;
+		outfile << "GAMEPAD_RIGHT_SHOULDER = 0xA7       # FORWARD" << std::endl;
+		outfile << "GAMEPAD_A = 0x0D                    # ENTER" << std::endl;
+		outfile << "GAMEPAD_B = 0                       # Default left click" << std::endl;
+		outfile << "GAMEPAD_X = 0                       # Default right click" << std::endl;
+		outfile << "GAMEPAD_Y = 0x08                    # BACKSPACE" << std::endl;
+		outfile << "" << std::endl;
+		outfile << "GAMEPAD_TRIGGER_LEFT = 0x10         # shift key" << std::endl;
+		outfile << "GAMEPAD_TRIGGER_RIGHT = 0x11        # control key" << std::endl;
+		outfile << "CTRL_GAMEPAD_LEFT_SHOULDER = 0xBD   # ctrl + -" << std::endl;
+		outfile << "CTRL_GAMEPAD_RIGHT_SHOULDER = 0xBB  # ctrl + +" << std::endl;
 		outfile << "" << std::endl;
 		// End config dump
 
@@ -171,6 +172,12 @@ void ConfigFile::ExtractKeys()
 			printf("Success!\nNow using %s.\n", fName.c_str());
 		}
 	}
+
+	 // print the text file
+
+	std::cout << "CONFIG FILE: " << fName << std::endl;
+	std::cout << "--------------------------------" << std::endl;
+
 
 	//exitWithError("\nSafety exit!\n");
 
@@ -191,6 +198,9 @@ void ConfigFile::ExtractKeys()
 		{
 			continue;
 		}
+
+		// print the line
+		std::cout << line << std::endl;
 
 		parseLine(temp, lineNo);
 	}

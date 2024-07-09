@@ -91,6 +91,7 @@ void Gopher::loadConfigFile()
 	CONFIG_HIDE = strtol(cfg.getValueOfKey<std::string>("CONFIG_HIDE").c_str(), 0, 0);
 	CONFIG_DISABLE = strtol(cfg.getValueOfKey<std::string>("CONFIG_DISABLE").c_str(), 0, 0);
 	CONFIG_DISABLE_VIBRATION = strtol(cfg.getValueOfKey<std::string>("CONFIG_DISABLE_VIBRATION").c_str(), 0, 0);
+	CONFIG_SCROLL_SPEED_CHANGE = strtol(cfg.getValueOfKey<std::string>("CONFIG_SCROLL_SPEED_CHANGE").c_str(), 0, 0);
 	CONFIG_SPEED_CHANGE = strtol(cfg.getValueOfKey<std::string>("CONFIG_SPEED_CHANGE").c_str(), 0, 0);
 	CONFIG_OSK = strtol(cfg.getValueOfKey<std::string>("CONFIG_OSK").c_str(), 0, 0);
 
@@ -136,18 +137,65 @@ void Gopher::loadConfigFile()
 		SCROLL_DEAD_ZONE = 5000;
 	}
 
-	SCROLL_SPEED = strtof(cfg.getValueOfKey<std::string>("SCROLL_SPEED").c_str(), 0);
-	if (SCROLL_SPEED < 0.00001f)
+	/*scroll_speed = strtof(cfg.getValueOfKey<std::string>("SCROLL_SPEED").c_str(), 0);
+	if (scroll_speed < 0.00001f)
 	{
-		SCROLL_SPEED = 0.1f;
+		scroll_speed = 0.1f;
+	}*/
+
+	// Variable scroll speeds
+	std::istringstream scroll_speeds_str = std::istringstream(cfg.getValueOfKey<std::string>("SCROLL_SPEEDS"));
+	int scroll_speed_idx = 1;
+	const float SCROLL_SPEED_MIN = 0.0001f;
+	const float SCROLL_SPEED_MAX = 1.0f;
+	for (std::string scrl_speed; std::getline(scroll_speeds_str, scrl_speed, ',');)
+	{
+		std::istringstream speed_entry = std::istringstream(scrl_speed);
+		std::string speed_name, speed_value_s;
+		// Check to see if we are at the string that includes the equals sign.
+		if (scrl_speed.find_first_of('=') != std::string::npos)
+		{
+			std::getline(speed_entry, speed_name, '=');
+		}
+		else
+		{
+			std::ostringstream tmp_name;
+			tmp_name << scroll_speed_idx++;
+			speed_name = tmp_name.str();
+		}
+		std::getline(speed_entry, speed_value_s);
+		float speed_value = strtof(speed_value_s.c_str(), 0);
+		// Ignore speeds that are not within the allowed range.
+		if (speed_value > SCROLL_SPEED_MIN && speed_value <= SCROLL_SPEED_MAX)
+		{
+			scroll_speeds.push_back(speed_value);
+			scroll_speed_names.push_back(speed_name);
+		}
 	}
 
-	// Variable cursor speeds
-	std::istringstream cursor_speed = std::istringstream(cfg.getValueOfKey<std::string>("CURSOR_SPEED"));
+	// If no scroll speeds were defined, add a set of default speeds.
+	if (scroll_speeds.size() == 0)
+	{
+		scroll_speeds.push_back(SCROLL_SPEED_ULTRALOW);
+		scroll_speeds.push_back(SCROLL_SPEED_LOW);
+		scroll_speeds.push_back(SCROLL_SPEED_MED);
+		scroll_speeds.push_back(SCROLL_SPEED_HIGH);
+		scroll_speed_names.push_back("ULTRALOW");
+		scroll_speed_names.push_back("LOW");
+		scroll_speed_names.push_back("MED");
+		scroll_speed_names.push_back("HIGH");
+
+		scroll_speed = scroll_speeds[2];
+	}
+	else {
+		scroll_speed = scroll_speeds[0];  // Initialize the scroll speed to the first speed stored. TODO: Set the scroll speed to a saved speed that was last used when the application was closed last.
+		// Variable cursor speeds
+	}
+	std::istringstream cursor_speeds = std::istringstream(cfg.getValueOfKey<std::string>("CURSOR_SPEEDS"));
 	int cur_speed_idx = 1;
 	const float CUR_SPEED_MIN = 0.0001f;
 	const float CUR_SPEED_MAX = 1.0f;
-	for (std::string cur_speed; std::getline(cursor_speed, cur_speed, ',');)
+	for (std::string cur_speed; std::getline(cursor_speeds, cur_speed, ',');)
 	{
 		std::istringstream cursor_speed_entry = std::istringstream(cur_speed);
 		std::string cur_name, cur_speed_s;
@@ -175,17 +223,20 @@ void Gopher::loadConfigFile()
 	// If no cursor speeds were defined, add a set of default speeds.
 	if (speeds.size() == 0)
 	{
-		speeds.push_back(0.005f);
-		speeds.push_back(0.015f);
-		speeds.push_back(0.025f);
-		speeds.push_back(0.004f);
+		speeds.push_back(SPEED_ULTRALOW);
+		speeds.push_back(SPEED_LOW);
+		speeds.push_back(SPEED_MED);
+		speeds.push_back(SPEED_HIGH);
 		speed_names.push_back("ULTRALOW");
 		speed_names.push_back("LOW");
 		speed_names.push_back("MED");
 		speed_names.push_back("HIGH");
-	}
-	speed = speeds[0];  // Initialize the speed to the first speed stored. TODO: Set the speed to a saved speed that was last used when the application was closed last.
 
+		speed = speeds[2];
+	}
+	else {
+		speed = speeds[0];  // Initialize the speed to the first speed stored. TODO: Set the speed to a saved speed that was last used when the application was closed last.
+	}
 	// Swap stick functions
 	SWAP_THUMBSTICKS = strtol(cfg.getValueOfKey<std::string>("SWAP_THUMBSTICKS").c_str(), 0, 0);
 
@@ -263,6 +314,29 @@ void Gopher::loop()
 		}
 	}
 
+	// Change Scroll Speed
+	setXboxClickState(CONFIG_SCROLL_SPEED_CHANGE);
+	if (_xboxClickIsDown[CONFIG_SCROLL_SPEED_CHANGE])
+	{
+		const int CHANGE_SCROLL_SPEED_VIBRATION_INTENSITY = 65000;   // Speed of the vibration motors when changing scroll speed.
+		const int CHANGE_SCROLL_SPEED_VIBRATION_DURATION = 450;      // Duration of the scroll speed change vibration in milliseconds.
+
+		scroll_speed_idx++;
+		std::cout << "Existing scroll speeds are: " << std::endl;
+		for (unsigned int i = 0; i < scroll_speeds.size(); i++)
+		{
+			std::cout << scroll_speed_names[i] << " = " << scroll_speeds[i] << std::endl;
+		}
+
+		if (scroll_speed_idx >= scroll_speeds.size())
+		{
+			scroll_speed_idx = scroll_speed_idx % scroll_speeds.size();
+		}
+		scroll_speed = scroll_speeds[scroll_speed_idx];
+		printf("Setting scroll speed to %f (%s)...\n", scroll_speed, scroll_speed_names[scroll_speed_idx].c_str());
+		pulseVibrate(CHANGE_SCROLL_SPEED_VIBRATION_DURATION, CHANGE_SCROLL_SPEED_VIBRATION_INTENSITY, CHANGE_SCROLL_SPEED_VIBRATION_INTENSITY);
+	}
+
 	// Will change between the current speed values
 	setXboxClickState(CONFIG_SPEED_CHANGE);
 	if (_xboxClickIsDown[CONFIG_SPEED_CHANGE])
@@ -273,7 +347,7 @@ void Gopher::loop()
 		speed_idx++;
 		if (speed_idx >= speeds.size())
 		{
-			speed_idx = 0;
+			speed_idx = speed_idx % speeds.size();
 		}
 		speed = speeds[speed_idx];
 		printf("Setting speed to %f (%s)...\n", speed, speed_names[speed_idx].c_str());
@@ -474,7 +548,7 @@ int sgn(T val)
 // Returns:
 //   If the value is valid, t will be returned as-is as a float. If the value is 
 //     invalid, 0 will be returned.
-float Gopher::getDelta(short t)
+short Gopher::getDelta(short t)
 {
 	//filter non-32768 and 32767, wireless ones can glitch sometimes and send it to the edge of the screen, it'll toss out some HUGE integer even when it's centered
 	if (t > 32767) t = 0;
@@ -560,7 +634,7 @@ void Gopher::handleMouseMovement()
 //   Controls the scroll wheel movement by reading the right thumbstick.
 void Gopher::handleScrolling()
 {
-	float current_SCROLL_SPEED = SCROLL_SPEED;
+	float current_SCROLL_SPEED = scroll_speed;
 
 	float tx;
 	float ty;
@@ -597,12 +671,12 @@ void Gopher::handleScrolling()
 
 	if (magnitudeX > SCROLL_DEAD_ZONE)
 	{
-		double scrollX = tx * getMult(magnitudeX, SCROLL_DEAD_ZONE) * current_SCROLL_SPEED;
+		float scrollX = tx * getMult(magnitudeX, SCROLL_DEAD_ZONE) * current_SCROLL_SPEED;
 		mouseEvent(MOUSEEVENTF_HWHEEL, scrollX);
 	}
 	if (magnitudeY > SCROLL_DEAD_ZONE)
 	{
-		double scrollY = ty * getMult(magnitudeY, SCROLL_DEAD_ZONE) * current_SCROLL_SPEED;
+		float scrollY = ty * getMult(magnitudeY, SCROLL_DEAD_ZONE) * current_SCROLL_SPEED;
 		mouseEvent(MOUSEEVENTF_WHEEL, scrollY);
 	}
 }

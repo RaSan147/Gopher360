@@ -2,6 +2,7 @@
 
 CXBOXController::CXBOXController(int playerNumber)
 {
+	_controllerState = XINPUT_STATE();
 	_controllerNum = playerNumber - 1; //set number
 }
 
