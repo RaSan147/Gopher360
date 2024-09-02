@@ -103,18 +103,26 @@ void ConfigFile::ExtractKeys()
 		outfile << "#	Set which controller buttons will activate the configuration events." << std::endl;
 		outfile << "#	SET 0 FOR NO FUNCTION." << std::endl;
 		outfile << "" << std::endl;
+
 		outfile << "# ADVANCED CONFIGURATION SETTINGS" << std::endl;
 		outfile << "#  ALLOWED CURSOR SPEEDS, FIRST WILL BE CHOSEN BY DEFAULT.  VALUES > 1.0 WILL BE IGNORED.  NO SPACES." << std::endl;
-		outfile << "# SCROLL_SPEEDS = ULTRASLOW=0.03,LOW=0.07,MED=0.1,HIGH=0.2" << std::endl;
-		outfile << "# CURSOR_SPEEDS = ULTRALOW=0.005,LOW=0.015,MED=0.025,HIGH=0.04" << std::endl;
+		outfile << "SCROLL_SPEEDS = ULTRASLOW=0.03,LOW=0.07,MED=0.1,HIGH=0.2" << std::endl;
+		outfile << "CURSOR_SPEEDS = ULTRALOW=0.005,LOW=0.015,MED=0.025,HIGH=0.04" << std::endl;
+
 		outfile << "#  SET ACCELERATION FACTOR FOR NON-LINEAR CURSOR SPEED" << std::endl;
-		outfile << "# ACCELERATION_FACTOR = 3" << std::endl;
+		outfile << "ACCELERATION_FACTOR = 3" << std::endl;
 		outfile << "#  Swaps the function of the thumbsticks. Set to 0 for default behavior or set to 1 to have the mouse movement on the right stick and scrolling on the left stick." << std::endl;
 		outfile << "SWAP_THUMBSTICKS = 0" << std::endl;
 		outfile << "DEAD_ZONE = 6000 # Thumbstick dead zone to use for mouse movement. Absolute maximum thumbstick value is 32768." << std::endl;
 		outfile << "SCROLL_DEAD_ZONE = 6000 # Thumbstick dead zone to use for scroll wheel movement. Absolute maximum thumbstick value is 32768." << std::endl;
-		outfile << "TRIGGER_DEAD_ZONE = 0 # Dead zone for the left and right triggers to detect a trigger press. Range from 0 (accept all input) to 255 (ignore all input)." << std::endl;
-		outfile << "SCROLL_SPEED = 0.1 # Speed at which you scroll (scalar)" << std::endl;
+		outfile << "TRIGGER_DEAD_ZONE = 0 # Dead zone for the left and right triggers to detect a trigger press. Range from 0 (accept all input) to 255 (ignore all input)." << std::endl << std::endl;
+
+		outfile << "SCROLL_SPEED_ID = 2" << std::endl;
+		outfile << "# Speed preset index at which you scroll" << std::endl;
+		outfile << "CURSOR_SPEED_ID = 2" << std::endl;
+		outfile << "# Speed preset index at which you move the cursor" << std::endl << std::endl;
+
+
 		outfile << "#	AVAILABLE VALUES AT https://msdn.microsoft.com/en-us/library/windows/desktop/microsoft.directx_sdk.reference.xinput_gamepad(v=vs.85).aspx" << std::endl;
 		outfile << "#	TIP: Sum the hex value for double button shortcuts eg. 0x0010(START) 0x0020(BACK) so 0x0030(START+BACK) will trigger the event only when both are pressed." << std::endl;
 		outfile << "" << std::endl;
@@ -133,8 +141,8 @@ void ConfigFile::ExtractKeys()
 		outfile << "CONFIG_HIDE = 0                     # Hides the terminal" << std::endl;
 		outfile << "CONFIG_DISABLE = 0x0030             # Disables the Gopher        #Select+Start              " << std::endl;
 		outfile << "CONFIG_DISABLE_VIBRATION = 0x0021   # Disables Gopher Vibrations #Select+Up" << std::endl;
-		outfile << "CONFIG_SCROLL_SPEED_CHANGE = 0x0028 # Change scroll speed        #Select+Down" << std::endl;
-		outfile << "CONFIG_SPEED_CHANGE =  0x0024       # Change speed               #LBump+RBump" << std::endl;
+		outfile << "CONFIG_SCROLL_SPEED_CHANGE = 0x0028 # Change scroll speed        #Select+Right" << std::endl;
+		outfile << "CONFIG_SPEED_CHANGE =  0x0024       # Change speed               #Select+Left" << std::endl;
 		outfile << "GAMEPAD_DPAD_UP = 0x26              # UP" << std::endl;
 		outfile << "GAMEPAD_DPAD_DOWN = 0x28            # DOWN" << std::endl;
 		outfile << "GAMEPAD_DPAD_LEFT = 0x25            # LEFT" << std::endl;

@@ -33,16 +33,16 @@ private:
 	const float SCROLL_SPEED_MED = 0.1f;
 	const float SCROLL_SPEED_HIGH = 0.2f;
 	float scroll_speed = SCROLL_SPEED_MED;
-	unsigned int scroll_speed_idx = 0;
+	unsigned int scroll_speed_idx=0;
 
 	// Cursor speed settings
-	const float SPEED_ULTRALOW = 0.005f;
-	const float SPEED_LOW = 0.015f;
-	const float SPEED_MED = 0.025f;
-	const float SPEED_HIGH = 0.04f;
-	float speed = SPEED_MED;
+	const float CURSOR_SPEED_ULTRALOW = 0.005f;
+	const float CURSOR_SPEED_LOW = 0.015f;
+	const float CURSOR_SPEED_MED = 0.025f;
+	const float CURSOR_SPEED_HIGH = 0.04f;
+	float cursor_speed = CURSOR_SPEED_MED;
 	float acceleration_factor = 0.0f;
-	unsigned int speed_idx = 0;
+	unsigned int cursor_speed_idx=0;
 
 	float _xRest = 0.0f;
 	float _yRest = 0.0f;
@@ -57,8 +57,8 @@ private:
 	std::vector<std::string> scroll_speed_names;  // Contains display names of speeds to display
 	unsigned int scroll_idx = 0;
 
-	std::vector<float> speeds;	            // Contains actual speeds to choose
-	std::vector<std::string> speed_names;   // Contains display names of speeds to display
+	std::vector<float> cursor_speeds;	            // Contains actual speeds to choose
+	std::vector<std::string> cursor_speed_names;   // Contains display names of speeds to display
 
 	// Mouse Clicks
 	DWORD CONFIG_MOUSE_LEFT = NULL;

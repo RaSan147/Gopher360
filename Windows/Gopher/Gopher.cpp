@@ -145,7 +145,9 @@ void Gopher::loadConfigFile()
 
 	// Variable scroll speeds
 	std::istringstream scroll_speeds_str = std::istringstream(cfg.getValueOfKey<std::string>("SCROLL_SPEEDS"));
-	int scroll_speed_idx = 1;
+	
+	scroll_speed_idx = 1;
+
 	const float SCROLL_SPEED_MIN = 0.0001f;
 	const float SCROLL_SPEED_MAX = 1.0f;
 	for (std::string scrl_speed; std::getline(scroll_speeds_str, scrl_speed, ',');)
@@ -174,6 +176,7 @@ void Gopher::loadConfigFile()
 	}
 
 	// If no scroll speeds were defined, add a set of default speeds.
+	std::cout << "scroll_speeds.size(): " << scroll_speeds.size() << std::endl;
 	if (scroll_speeds.size() == 0)
 	{
 		scroll_speeds.push_back(SCROLL_SPEED_ULTRALOW);
@@ -186,16 +189,20 @@ void Gopher::loadConfigFile()
 		scroll_speed_names.push_back("HIGH");
 
 		scroll_speed = scroll_speeds[2];
+		scroll_speed_idx = 2;
 	}
 	else {
-		scroll_speed = scroll_speeds[0];  // Initialize the scroll speed to the first speed stored. TODO: Set the scroll speed to a saved speed that was last used when the application was closed last.
-		// Variable cursor speeds
+		scroll_speed_idx = 0;
+		// Initialize the scroll speed to the first speed stored in the configuration file.
+		scroll_speed_idx = strtol(cfg.getValueOfKey<std::string>("SCROLL_SPEED_ID").c_str(), 0, 0);
+		scroll_speed = scroll_speeds[scroll_speed_idx];  // Initialize the scroll speed to the first speed stored.
+		std::cout << "Current scroll_speed_idx: " << scroll_speed_idx << "With scroll_speed: " << scroll_speed << std::endl;
 	}
-	std::istringstream cursor_speeds = std::istringstream(cfg.getValueOfKey<std::string>("CURSOR_SPEEDS"));
-	int cur_speed_idx = 1;
+	std::istringstream cursor_speeds_str = std::istringstream(cfg.getValueOfKey<std::string>("CURSOR_SPEEDS"));
+	cursor_speed_idx = 1;
 	const float CUR_SPEED_MIN = 0.0001f;
 	const float CUR_SPEED_MAX = 1.0f;
-	for (std::string cur_speed; std::getline(cursor_speeds, cur_speed, ',');)
+	for (std::string cur_speed; std::getline(cursor_speeds_str, cur_speed, ',');)
 	{
 		std::istringstream cursor_speed_entry = std::istringstream(cur_speed);
 		std::string cur_name, cur_speed_s;
@@ -207,7 +214,7 @@ void Gopher::loadConfigFile()
 		else
 		{
 			std::ostringstream tmp_name;
-			tmp_name << cur_speed_idx++;
+			tmp_name << cursor_speed_idx++;
 			cur_name = tmp_name.str();
 		}
 		std::getline(cursor_speed_entry, cur_speed_s);
@@ -215,27 +222,31 @@ void Gopher::loadConfigFile()
 		// Ignore speeds that are not within the allowed range.
 		if (cur_speedf > CUR_SPEED_MIN && cur_speedf <= CUR_SPEED_MAX)
 		{
-			speeds.push_back(cur_speedf);
-			speed_names.push_back(cur_name);
+			cursor_speeds.push_back(cur_speedf);
+			cursor_speed_names.push_back(cur_name);
 		}
 	}
 
 	// If no cursor speeds were defined, add a set of default speeds.
-	if (speeds.size() == 0)
+	if (cursor_speeds.size() == 0)
 	{
-		speeds.push_back(SPEED_ULTRALOW);
-		speeds.push_back(SPEED_LOW);
-		speeds.push_back(SPEED_MED);
-		speeds.push_back(SPEED_HIGH);
-		speed_names.push_back("ULTRALOW");
-		speed_names.push_back("LOW");
-		speed_names.push_back("MED");
-		speed_names.push_back("HIGH");
+		cursor_speeds.push_back(CURSOR_SPEED_ULTRALOW);
+		cursor_speeds.push_back(CURSOR_SPEED_LOW);
+		cursor_speeds.push_back(CURSOR_SPEED_MED);
+		cursor_speeds.push_back(CURSOR_SPEED_HIGH);
+		cursor_speed_names.push_back("ULTRALOW");
+		cursor_speed_names.push_back("LOW");
+		cursor_speed_names.push_back("MED");
+		cursor_speed_names.push_back("HIGH");
 
-		speed = speeds[2];
+		cursor_speed = cursor_speeds[2];
 	}
 	else {
-		speed = speeds[0];  // Initialize the speed to the first speed stored. TODO: Set the speed to a saved speed that was last used when the application was closed last.
+		cursor_speed_idx = 0;
+		// Initialize the speed to the first speed stored in the configuration file.
+		cursor_speed_idx = strtol(cfg.getValueOfKey<std::string>("CURSOR_SPEED_ID").c_str(), 0, 0);
+		cursor_speed = cursor_speeds[cursor_speed_idx];  // Initialize the speed to the first speed stored.
+		std::cout << "Current cursor_speed_idx: " << cursor_speed_idx << "With cursor_speed: " << cursor_speed << std::endl;
 	}
 	// Swap stick functions
 	SWAP_THUMBSTICKS = strtol(cfg.getValueOfKey<std::string>("SWAP_THUMBSTICKS").c_str(), 0, 0);
@@ -318,21 +329,73 @@ void Gopher::loop()
 	setXboxClickState(CONFIG_SCROLL_SPEED_CHANGE);
 	if (_xboxClickIsDown[CONFIG_SCROLL_SPEED_CHANGE])
 	{
-		const int CHANGE_SCROLL_SPEED_VIBRATION_INTENSITY = 65000;   // Speed of the vibration motors when changing scroll speed.
+		const int CHANGE_SCROLL_SPEED_VIBRATION_INTENSITY = 6500;   // Speed of the vibration motors when changing scroll speed.
 		const int CHANGE_SCROLL_SPEED_VIBRATION_DURATION = 450;      // Duration of the scroll speed change vibration in milliseconds.
 
-		scroll_speed_idx++;
 		std::cout << "Existing scroll speeds are: " << std::endl;
 		for (unsigned int i = 0; i < scroll_speeds.size(); i++)
 		{
 			std::cout << scroll_speed_names[i] << " = " << scroll_speeds[i] << std::endl;
 		}
 
-		if (scroll_speed_idx >= scroll_speeds.size())
-		{
-			scroll_speed_idx = scroll_speed_idx % scroll_speeds.size();
-		}
+		//std::cout << "Existing scroll speed index is: " << scroll_speed_idx << std::endl;
+		scroll_speed_idx++;
+		//std::cout << "New scroll speed index is: " << scroll_speed_idx << std::endl;
+		scroll_speed_idx = scroll_speed_idx % scroll_speeds.size();
+
 		scroll_speed = scroll_speeds[scroll_speed_idx];
+
+		// Write the new scroll speed to the configuration file (using find and replace)(if not present, add it)
+		std::string scroll_speed_id_name = "SCROLL_SPEED_ID";
+		std::string scroll_speed_id_s = std::to_string(scroll_speed_idx);
+		// open the file
+		std::ifstream file("config.ini");
+		// check if scroll_speed_id is in the file
+		std::string line;
+		bool found = false;
+		while (std::getline(file, line))
+		{
+			if (line.find(scroll_speed_id_name) != std::string::npos)
+			{
+				found = true;
+				break;
+			}
+		}
+		// if found, replace the value
+		if (found)
+		{
+			std::string temp_text = "";
+			std::string search = scroll_speed_id_name + " = ";
+			std::string replace = scroll_speed_id_name + " = " + scroll_speed_id_s;
+			std::ifstream file("config.ini");
+			//std::ofstream temp;
+			//temp.open("temp.ini");
+			while (std::getline(file, line))
+			{
+				if (line.find(search) != std::string::npos)
+				{
+					line = replace;
+				}
+				temp_text += line + "\n";
+			}
+			//temp.close();
+			file.close();
+			std::ofstream OutFile("config.ini");
+			OutFile << temp_text;
+			OutFile.close();
+		}
+		// if not found, add it
+		else
+		{
+			std::ofstream file("config.ini", std::ios_base::app);
+			// add the new line to the end of the
+			file << std::endl;
+			file << scroll_speed_id_name << "=" << scroll_speed_id_s << std::endl;
+			file.close();
+		}
+		
+
+
 		printf("Setting scroll speed to %f (%s)...\n", scroll_speed, scroll_speed_names[scroll_speed_idx].c_str());
 		pulseVibrate(CHANGE_SCROLL_SPEED_VIBRATION_DURATION, CHANGE_SCROLL_SPEED_VIBRATION_INTENSITY, CHANGE_SCROLL_SPEED_VIBRATION_INTENSITY);
 	}
@@ -341,16 +404,70 @@ void Gopher::loop()
 	setXboxClickState(CONFIG_SPEED_CHANGE);
 	if (_xboxClickIsDown[CONFIG_SPEED_CHANGE])
 	{
-		const int CHANGE_SPEED_VIBRATION_INTENSITY = 65000;   // Speed of the vibration motors when changing cursor speed.
+		const int CHANGE_SPEED_VIBRATION_INTENSITY = 6500;   // Speed of the vibration motors when changing cursor speed.
 		const int CHANGE_SPEED_VIBRATION_DURATION = 450;      // Duration of the cursor speed change vibration in milliseconds.
 
-		speed_idx++;
-		if (speed_idx >= speeds.size())
+		//std::cout << "Existing cursor speed index " << cursor_speed_idx << " is: " << cursor_speed << std::endl;
+		cursor_speed_idx++;
+		//std::cout << "Changing cursor speed index to " << cursor_speed_idx << std::endl;
+		cursor_speed_idx = cursor_speed_idx % cursor_speeds.size();
+
+		cursor_speed = cursor_speeds[cursor_speed_idx];
+
+		// Write the new cursor speed to the configuration file (using find and replace)(if not present, add it)
+		std::string cursor_speed_id_name = "CURSOR_SPEED_ID";
+		std::string cursor_speed_id_s = std::to_string(cursor_speed_idx);
+
+		// open the file
+		std::ifstream file("config.ini");
+		// check if cursor_speed_id is in the file
+		std::string line;
+		bool found = false;
+
+		while (std::getline(file, line))
 		{
-			speed_idx = speed_idx % speeds.size();
+			if (line.find(cursor_speed_id_name) != std::string::npos)
+			{
+				found = true;
+				break;
+			}
 		}
-		speed = speeds[speed_idx];
-		printf("Setting speed to %f (%s)...\n", speed, speed_names[speed_idx].c_str());
+
+		// if found, replace the value
+		if (found)
+		{
+			std::string temp_text = "";
+			std::string search = cursor_speed_id_name + " = ";
+			std::string replace = cursor_speed_id_name + " = " + cursor_speed_id_s;
+			std::ifstream file("config.ini");
+			//std::ofstream temp;
+			//temp.open("temp.ini");
+			while (std::getline(file, line))
+			{
+				if (line.find(search) != std::string::npos)
+				{
+					line = replace;
+				}
+				temp_text += line + "\n";
+			}
+			//temp.close();
+			file.close();
+			std::ofstream OutFile("config.ini");
+			OutFile << temp_text;
+			OutFile.close();
+		}
+		// if not found, add it
+		else
+		{
+			std::ofstream file("config.ini", std::ios_base::app);
+			// add the new line to the end of the
+			file << std::endl;
+			file << cursor_speed_id_name << "=" << cursor_speed_id_s << std::endl;
+			file.close();
+		}
+
+
+		printf("Setting speed to %f (%s)...\n", cursor_speed, cursor_speed_names[cursor_speed_idx].c_str());
 		pulseVibrate(CHANGE_SPEED_VIBRATION_DURATION, CHANGE_SPEED_VIBRATION_INTENSITY, CHANGE_SPEED_VIBRATION_INTENSITY);
 	}
 
@@ -615,7 +732,7 @@ void Gopher::handleMouseMovement()
 	float lengthsq = tx * tx + ty * ty;
 	if (lengthsq > DEAD_ZONE * DEAD_ZONE)
 	{
-		float mult = speed * getMult(sqrt(lengthsq), DEAD_ZONE, acceleration_factor);
+		float mult = cursor_speed * getMult(sqrt(lengthsq), DEAD_ZONE, acceleration_factor);
 
 		dx = tx * mult;
 		dy = ty * mult;
