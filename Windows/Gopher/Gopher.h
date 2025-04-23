@@ -142,6 +142,8 @@ public:
 
 	HWND getOskWindow();
 
+	bool openOnScreenKeyboard();
+
 private:
 
 	bool erasePressedKey(WORD key);

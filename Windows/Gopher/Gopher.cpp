@@ -312,7 +312,13 @@ void Gopher::loop()
 			HWND otk_win = getOskWindow();
 			if (otk_win == NULL)
 			{
-				printf("Please start the On-screen keyboard first\n");
+				openOnScreenKeyboard();	
+				otk_win = getOskWindow();
+				if (otk_win == NULL)
+				{
+					printf("Please start the On-screen keyboard first\n");
+					return;
+				}
 			}
 			else if (IsIconic(otk_win))
 			{
@@ -1021,6 +1027,45 @@ HWND Gopher::getOskWindow()
 	HWND ret = NULL;
 	EnumWindows(EnumWindowsProc, (LPARAM)&ret);
 	return ret;
+}
+
+bool Gopher::openOnScreenKeyboard()
+{
+	typedef BOOL(WINAPI* Wow64DisableWow64FsRedirectionFunc)(PVOID*);
+	typedef BOOL(WINAPI* Wow64RevertWow64FsRedirectionFunc)(PVOID);
+	// Disable file system redirection
+	PVOID oldValue;
+	Wow64DisableWow64FsRedirectionFunc disableWow64FsRedirection =
+		(Wow64DisableWow64FsRedirectionFunc)GetProcAddress(
+			GetModuleHandle(TEXT("kernel32")), "Wow64DisableWow64FsRedirection");
+	Wow64RevertWow64FsRedirectionFunc revertWow64FsRedirection =
+		(Wow64RevertWow64FsRedirectionFunc)GetProcAddress(
+			GetModuleHandle(TEXT("kernel32")), "Wow64RevertWow64FsRedirection");
+
+	if (disableWow64FsRedirection && revertWow64FsRedirection) {
+		disableWow64FsRedirection(&oldValue);
+	}
+
+	// Now try launching
+	HINSTANCE result = ShellExecuteW(
+		NULL,
+		L"runas", // "runas" triggers UAC prompt
+		L"C:\\Windows\\System32\\osk.exe",
+		NULL,
+		NULL,
+		SW_SHOWNORMAL
+	);
+
+	if (revertWow64FsRedirection) {
+		revertWow64FsRedirection(oldValue);
+	}
+
+	if ((int)result <= 32) {
+		std::cerr << "Failed to start OSK. Error code: " << (int)result << std::endl;
+		return false;
+	}
+
+	return true;
 }
 
 // Description:
