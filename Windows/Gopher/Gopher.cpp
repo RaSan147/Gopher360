@@ -107,9 +107,11 @@ void Gopher::loadConfigFile()
 	GAMEPAD_LEFT_THUMB = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_LEFT_THUMB").c_str(), 0, 0);
 	GAMEPAD_RIGHT_THUMB = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_RIGHT_THUMB").c_str(), 0, 0);
 	GAMEPAD_LEFT_SHOULDER = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_LEFT_SHOULDER").c_str(), 0, 0);
-	CTRL_GAMEPAD_LEFT_SHOULDER = strtol(cfg.getValueOfKey<std::string>("CTRL_GAMEPAD_LEFT_SHOULDER").c_str(), 0, 0);
+	GAMEPAD_LEFT_SHOULDER__LT = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_LEFT_SHOULDER__LT").c_str(), 0, 0);
+	GAMEPAD_LEFT_SHOULDER__RT = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_LEFT_SHOULDER__RT").c_str(), 0, 0);
 	GAMEPAD_RIGHT_SHOULDER = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_RIGHT_SHOULDER").c_str(), 0, 0);
-	CTRL_GAMEPAD_RIGHT_SHOULDER = strtol(cfg.getValueOfKey<std::string>("CTRL_GAMEPAD_RIGHT_SHOULDER").c_str(), 0, 0);
+	GAMEPAD_RIGHT_SHOULDER__LT = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_RIGHT_SHOULDER__LT").c_str(), 0, 0);
+	GAMEPAD_RIGHT_SHOULDER__RT = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_RIGHT_SHOULDER__RT").c_str(), 0, 0);
 	GAMEPAD_A = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_A").c_str(), 0, 0);
 	GAMEPAD_B = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_B").c_str(), 0, 0);
 	GAMEPAD_X = strtol(cfg.getValueOfKey<std::string>("GAMEPAD_X").c_str(), 0, 0);
@@ -196,7 +198,7 @@ void Gopher::loadConfigFile()
 		// Initialize the scroll speed to the first speed stored in the configuration file.
 		scroll_speed_idx = strtol(cfg.getValueOfKey<std::string>("SCROLL_SPEED_ID").c_str(), 0, 0);
 		scroll_speed = scroll_speeds[scroll_speed_idx];  // Initialize the scroll speed to the first speed stored.
-		std::cout << "Current scroll_speed_idx: " << scroll_speed_idx << "With scroll_speed: " << scroll_speed << std::endl;
+		std::cout << "Current scroll_speed_idx: " << scroll_speed_idx << " \t With scroll_speed: " << scroll_speed << std::endl;
 	}
 	std::istringstream cursor_speeds_str = std::istringstream(cfg.getValueOfKey<std::string>("CURSOR_SPEEDS"));
 	cursor_speed_idx = 1;
@@ -246,7 +248,7 @@ void Gopher::loadConfigFile()
 		// Initialize the speed to the first speed stored in the configuration file.
 		cursor_speed_idx = strtol(cfg.getValueOfKey<std::string>("CURSOR_SPEED_ID").c_str(), 0, 0);
 		cursor_speed = cursor_speeds[cursor_speed_idx];  // Initialize the speed to the first speed stored.
-		std::cout << "Current cursor_speed_idx: " << cursor_speed_idx << "With cursor_speed: " << cursor_speed << std::endl;
+		std::cout << "Current cursor_speed_idx: " << cursor_speed_idx << " \t With cursor_speed: " << cursor_speed << std::endl;
 	}
 	// Swap stick functions
 	SWAP_THUMBSTICKS = strtol(cfg.getValueOfKey<std::string>("SWAP_THUMBSTICKS").c_str(), 0, 0);
@@ -515,7 +517,11 @@ void Gopher::loop()
 	{
 		if (GetKeyState(VK_CONTROL) & 0x8000)
 		{
-			mapKeyboard(XINPUT_GAMEPAD_LEFT_SHOULDER, CTRL_GAMEPAD_LEFT_SHOULDER);
+			mapKeyboard(XINPUT_GAMEPAD_LEFT_SHOULDER, GAMEPAD_LEFT_SHOULDER__LT);
+		}
+		else if (GetKeyState(VK_SHIFT) & 0x8000)
+		{
+			mapKeyboard(XINPUT_GAMEPAD_LEFT_SHOULDER, GAMEPAD_LEFT_SHOULDER__RT);
 		}
 		else {
 			mapKeyboard(XINPUT_GAMEPAD_LEFT_SHOULDER, GAMEPAD_LEFT_SHOULDER);
@@ -525,7 +531,11 @@ void Gopher::loop()
 	{
 		if (GetKeyState(VK_CONTROL) & 0x8000)
 		{
-			mapKeyboard(XINPUT_GAMEPAD_RIGHT_SHOULDER, CTRL_GAMEPAD_RIGHT_SHOULDER);
+			mapKeyboard(XINPUT_GAMEPAD_RIGHT_SHOULDER, GAMEPAD_RIGHT_SHOULDER__LT);
+		}
+		else if (GetKeyState(VK_SHIFT) & 0x8000)
+		{
+			mapKeyboard(XINPUT_GAMEPAD_RIGHT_SHOULDER, GAMEPAD_RIGHT_SHOULDER__RT);
 		}
 		else {
 			mapKeyboard(XINPUT_GAMEPAD_RIGHT_SHOULDER, GAMEPAD_RIGHT_SHOULDER);

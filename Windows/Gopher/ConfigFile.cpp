@@ -107,7 +107,7 @@ void ConfigFile::ExtractKeys()
 		outfile << "# ADVANCED CONFIGURATION SETTINGS" << std::endl;
 		outfile << "#  ALLOWED CURSOR SPEEDS, FIRST WILL BE CHOSEN BY DEFAULT.  VALUES > 1.0 WILL BE IGNORED.  NO SPACES." << std::endl;
 		outfile << "SCROLL_SPEEDS = ULTRASLOW=0.03,LOW=0.07,MED=0.1,HIGH=0.2" << std::endl;
-		outfile << "CURSOR_SPEEDS = ULTRALOW=0.005,LOW=0.015,MED=0.025,HIGH=0.04" << std::endl;
+		outfile << "CURSOR_SPEEDS = ULTRALOW=0.005,LOW=0.015,MED=0.025,HIGH=0.05" << std::endl;
 
 		outfile << "#  SET ACCELERATION FACTOR FOR NON-LINEAR CURSOR SPEED" << std::endl;
 		outfile << "ACCELERATION_FACTOR = 3" << std::endl;
@@ -160,8 +160,10 @@ void ConfigFile::ExtractKeys()
 		outfile << "" << std::endl;
 		outfile << "GAMEPAD_TRIGGER_LEFT = 0x10         # shift key" << std::endl;
 		outfile << "GAMEPAD_TRIGGER_RIGHT = 0x11        # control key" << std::endl;
-		outfile << "CTRL_GAMEPAD_LEFT_SHOULDER = 0xBD   # ctrl + -" << std::endl;
-		outfile << "CTRL_GAMEPAD_RIGHT_SHOULDER = 0xBB  # ctrl + +" << std::endl;
+		outfile << "GAMEPAD_LEFT_SHOULDER__LT = 0xBD    # ctrl + -" << std::endl;
+		outfile << "GAMEPAD_RIGHT_SHOULDER__LT = 0xBB   # ctrl + +" << std::endl;
+		outfile << "GAMEPAD_LEFT_SHOULDER__RT = 0xAE    # Volume Down" << std::endl;
+		outfile << "GAMEPAD_RIGHT_SHOULDER__RT = 0xAF   # Volume Up" << std::endl;
 		outfile << "" << std::endl;
 		// End config dump
 
