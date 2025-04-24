@@ -147,8 +147,8 @@ void ConfigFile::ExtractKeys()
 		outfile << "GAMEPAD_DPAD_DOWN = 0x28            # DOWN" << std::endl;
 		outfile << "GAMEPAD_DPAD_LEFT = 0x25            # LEFT" << std::endl;
 		outfile << "GAMEPAD_DPAD_RIGHT = 0x27           # RIGHT" << std::endl;
-		outfile << "GAMEPAD_START = 0x5B                # WINDOW" << std::endl;
-		outfile << "GAMEPAD_BACK = 0x09                 # TAB" << std::endl;
+		outfile << "GAMEPAD_BACK = 0x5B                 # WINDOW" << std::endl;
+		outfile << "GAMEPAD_START = 0x09                # TAB" << std::endl;
 		outfile << "GAMEPAD_RIGHT_THUMB = 0xB3          # MediaPlayPause" << std::endl;
 		outfile << "GAMEPAD_LEFT_THUMB = 0              # OnScreenKeyboard" << std::endl;
 		outfile << "GAMEPAD_RIGHT_SHOULDER = 0xA7       # FORWARD" << std::endl;
