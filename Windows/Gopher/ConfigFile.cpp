@@ -140,9 +140,9 @@ void ConfigFile::ExtractKeys()
 		outfile << "CONFIG_MOUSE_MIDDLE = 0             # Middle mouse button" << std::endl;
 		outfile << "CONFIG_HIDE = 0                     # Hides the terminal" << std::endl;
 		outfile << "CONFIG_DISABLE = 0x0030             # Disables the Gopher        # Select+Start" << std::endl;
-		outfile << "CONFIG_DISABLE_VIBRATION = 0x0051   # Disables Gopher Vibrations # Start+Up" << std::endl;
-		outfile << "CONFIG_SCROLL_SPEED_CHANGE = 0x0058 # Change scroll speed        # Start+Right" << std::endl;
-		outfile << "CONFIG_SPEED_CHANGE =  0x0054       # Change speed               # Start+Left" << std::endl;
+		outfile << "CONFIG_DISABLE_VIBRATION = 0x0011   # Disables Gopher Vibrations # Start+Up" << std::endl;
+		outfile << "CONFIG_SCROLL_SPEED_CHANGE = 0x0018 # Change scroll speed        # Start+Right" << std::endl;
+		outfile << "CONFIG_SPEED_CHANGE = 0x0014        # Change speed               # Start+Left" << std::endl;
 		outfile << "GAMEPAD_DPAD_UP = 0x26              # UP                         # Up" << std::endl;
 		outfile << "GAMEPAD_DPAD_DOWN = 0x28            # DOWN                       # Down" << std::endl;
 		outfile << "GAMEPAD_DPAD_LEFT = 0x25            # LEFT                       # Left" << std::endl;
